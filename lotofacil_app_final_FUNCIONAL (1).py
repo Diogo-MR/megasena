@@ -163,7 +163,6 @@ if uploaded_file:
                 for i, linha in enumerate(concursos[dezenas_cols].values):
                     acertos = len(set(jogo) & set(linha))
                     if acertos == 15:
-                        encontrados.append({
                             repetidas = len(set(jogo) & set(concursos.iloc[i][dezenas_cols]))
                             moldura = len(set(jogo) & moldura)
                             soma = sum(jogo)
