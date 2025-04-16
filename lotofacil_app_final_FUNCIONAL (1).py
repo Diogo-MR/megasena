@@ -181,7 +181,6 @@ if uploaded_file:
                                 "Moldura": moldura,
                                 "Soma": soma
                             })
-                        })
                         break
                 if encontrados:
                     break
