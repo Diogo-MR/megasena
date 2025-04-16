@@ -152,29 +152,29 @@ if uploaded_file:
         tentativas = 0
         encontrados = []
         while True:
-        tentativas += 100
-        jogos_teste = []
-        while len(jogos_teste) < 100:
-            jogo = sorted(random.sample(range(1, 26), 15))
-            pares = len([n for n in jogo if n % 2 == 0])
-            if 6 <= pares <= 9:
-                jogos_teste.append(jogo)
-        for jogo in jogos_teste:
-            for i, linha in enumerate(concursos[dezenas_cols].values):
-                acertos = len(set(jogo) & set(linha))
-                if acertos == 15:
-                    encontrados.append({
-                        "Jogo": jogo,
-                        "Concurso": concursos.iloc[i]["Concurso"],
-                        "Data": concursos.iloc[i]["Data Sorteio"],
-                        "Acertos": acertos,
-                        "Total Jogos Simulados": tentativas
-                    })
+            tentativas += 100
+            jogos_teste = []
+            while len(jogos_teste) < 100:
+                jogo = sorted(random.sample(range(1, 26), 15))
+                pares = len([n for n in jogo if n % 2 == 0])
+                if 6 <= pares <= 9:
+                    jogos_teste.append(jogo)
+            for jogo in jogos_teste:
+                for i, linha in enumerate(concursos[dezenas_cols].values):
+                    acertos = len(set(jogo) & set(linha))
+                    if acertos == 15:
+                        encontrados.append({
+                            "Jogo": jogo,
+                            "Concurso": concursos.iloc[i]["Concurso"],
+                            "Data": concursos.iloc[i]["Data Sorteio"],
+                            "Acertos": acertos,
+                            "Total Jogos Simulados": tentativas
+                        })
+                        break
+                if encontrados:
                     break
             if encontrados:
                 break
-        if encontrados:
-            break
 
         st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
         st.dataframe(pd.DataFrame(encontrados))
