@@ -169,6 +169,11 @@ if uploaded_file:
                             "Data": concursos.iloc[i]["Data Sorteio"],
                             "Acertos": acertos,
                             "Total Jogos Simulados": tentativas
+                            "Repetidas com Último": repetidas,
+                            "Pares": pares,
+                            "Ímpares": impares,
+                            "Moldura": mold,
+                            "Soma": soma
                         })
                         break
                 if encontrados:
