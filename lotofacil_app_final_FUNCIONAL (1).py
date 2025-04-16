@@ -168,7 +168,7 @@ if uploaded_file:
                             "Concurso": concursos.iloc[i]["Concurso"],
                             "Data": concursos.iloc[i]["Data Sorteio"],
                             "Acertos": acertos,
-                            "Total Jogos Simulados": tentativas
+                            "Total Jogos Simulados": tentativas,
                             "Repetidas com Último": repetidas,
                             "Pares": pares,
                             "Ímpares": impares,
