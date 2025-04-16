@@ -163,24 +163,24 @@ if uploaded_file:
                 for i, linha in enumerate(concursos[dezenas_cols].values):
                     acertos = len(set(jogo) & set(linha))
                     if acertos == 15:
-                            repetidas = len(set(jogo) & set(concursos.iloc[i][dezenas_cols]))
-                            moldura = len(set(jogo) & moldura)
-                            soma = sum(jogo)
-                            pares = len([n for n in jogo if n % 2 == 0])
-                            impares = 15 - pares
+                        repetidas = len(set(jogo) & set(concursos.iloc[i][dezenas_cols]))
+                        moldura = len(set(jogo) & moldura)
+                        soma = sum(jogo)
+                        pares = len([n for n in jogo if n % 2 == 0])
+                        impares = 15 - pares
 
-                            encontrados.append({
-                                "Jogo": jogo,
-                                "Concurso": concursos.iloc[i]["Concurso"],
-                                "Data": concursos.iloc[i]["Data Sorteio"],
-                                "Acertos": acertos,
-                                "Total Jogos Simulados": tentativas,
-                                "Repetidas": repetidas,
-                                "Pares": pares,
-                                "Ímpares": impares,
-                                "Moldura": moldura,
-                                "Soma": soma
-                            })
+                        encontrados.append({
+                            "Jogo": jogo,
+                            "Concurso": concursos.iloc[i]["Concurso"],
+                            "Data": concursos.iloc[i]["Data Sorteio"],
+                            "Acertos": acertos,
+                            "Total Jogos Simulados": tentativas,
+                            "Repetidas": repetidas,
+                            "Pares": pares,
+                            "Ímpares": impares,
+                            "Moldura": moldura,
+                            "Soma": soma
+                        })
                         break
                 if encontrados:
                     break
