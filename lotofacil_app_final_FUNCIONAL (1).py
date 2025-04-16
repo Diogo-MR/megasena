@@ -148,10 +148,10 @@ if uploaded_file:
             st.plotly_chart(fig)
     
     if st.button("🧪 Simular até acertar 15 dezenas"):
-    st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
-    tentativas = 0
-    encontrados = []
-    while True:
+        st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
+        tentativas = 0
+        encontrados = []
+        while True:
         tentativas += 100
         jogos_teste = []
         while len(jogos_teste) < 100:
@@ -176,5 +176,5 @@ if uploaded_file:
         if encontrados:
             break
 
-    st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
-    st.dataframe(pd.DataFrame(encontrados))
+        st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
+        st.dataframe(pd.DataFrame(encontrados))
