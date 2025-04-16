@@ -164,16 +164,24 @@ if uploaded_file:
                     acertos = len(set(jogo) & set(linha))
                     if acertos == 15:
                         encontrados.append({
-                            "Jogo": jogo,
-                            "Concurso": concursos.iloc[i]["Concurso"],
-                            "Data": concursos.iloc[i]["Data Sorteio"],
-                            "Acertos": acertos,
-                            "Total Jogos Simulados": tentativas,
-                            "Repetidas com Último": repetidas,
-                            "Pares": pares,
-                            "Ímpares": impares,
-                            "Moldura": mold,
-                            "Soma": soma
+                            repetidas = len(set(jogo) & set(concursos.iloc[i][dezenas_cols]))
+                            moldura = len(set(jogo) & moldura)
+                            soma = sum(jogo)
+                            pares = len([n for n in jogo if n % 2 == 0])
+                            impares = 15 - pares
+
+                            encontrados.append({
+                                "Jogo": jogo,
+                                "Concurso": concursos.iloc[i]["Concurso"],
+                                "Data": concursos.iloc[i]["Data Sorteio"],
+                                "Acertos": acertos,
+                                "Total Jogos Simulados": tentativas,
+                                "Repetidas": repetidas,
+                                "Pares": pares,
+                                "Ímpares": impares,
+                                "Moldura": moldura,
+                                "Soma": soma
+                            })
                         })
                         break
                 if encontrados:
