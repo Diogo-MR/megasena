@@ -122,17 +122,6 @@ if uploaded_file:
         st.dataframe(df_fav)
         st.dataframe(df_manuais)
 
-            st.subheader("📈 Gráfico Comparativo IA x Manual")
-            cat = ["Soma", "Pares", "Ímpares", "Moldura", "Repetidas com Último"]
-            med_ia = df_ia[cat].mean()
-            med_man = df_manuais[cat].mean()
-
-            fig = go.Figure()
-            fig.add_trace(go.Bar(x=cat, y=med_ia, name="IA"))
-            fig.add_trace(go.Bar(x=cat, y=med_man, name="Manual"))
-            fig.update_layout(barmode="group", title="Comparação Estatística IA x Manual")
-            st.plotly_chart(fig)
-    
     if st.button("🧪 Simular até acertar 15 dezenas"):
         st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
         tentativas = 0
