@@ -120,8 +120,7 @@ if uploaded_file:
 
         df_fav = pd.DataFrame(resultados_fav)
         st.dataframe(df_fav)
-        st.dataframe(df_manuais)
-
+   
     if st.button("🧪 Simular até acertar 15 dezenas"):
         st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
         tentativas = 0
