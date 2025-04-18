@@ -120,50 +120,7 @@ if uploaded_file:
 
         df_fav = pd.DataFrame(resultados_fav)
         st.dataframe(df_fav)
-
-        st.subheader("🎯 Simular Acertos (buscando 15 dezenas)")
-        resultados = []
-        for jogo in df_ia["Dezenas"]:
-            for i, linha in enumerate(concursos[dezenas_cols].values):
-                acertos = len(set(jogo) & set(linha))
-                if acertos == 15:
-                    resultados.append({
-                        "Jogo": jogo,
-                        "Concurso": concursos.iloc[i]["Concurso"],
-                        "Data": concursos.iloc[i]["Data Sorteio"],
-                        "Acertos": acertos
-                    })
-
-        if resultados:
-            st.success(f"{len(resultados)} jogos atingiram 15 dezenas na simulação histórica!")
-            st.dataframe(pd.DataFrame(resultados))
-        else:
-            st.warning("Nenhum jogo IA bateu 15 dezenas com os dados simulados. Tente aumentar a quantidade.")
-
-        st.subheader("📊 Comparar com Jogos Manuais")
-        if "manuais" not in st.session_state:
-            st.session_state.manuais = []
-
-        with st.expander("➕ Adicionar jogo manual"):
-            entrada = st.text_input("Digite 15 dezenas separadas por espaço")
-            if st.button("Adicionar jogo manual"):
-                nums = [int(n) for n in entrada.split() if n.isdigit()]
-                if len(nums) == 15:
-                    st.session_state.manuais.append(nums)
-                    st.success("Jogo adicionado.")
-                else:
-                    st.error("Digite exatamente 15 números.")
-
-        if st.session_state.manuais:
-            df_manuais = pd.DataFrame(st.session_state.manuais)
-            df_manuais.columns = [f"D{i}" for i in range(1,16)]
-            df_manuais["Soma"] = df_manuais.sum(axis=1)
-            df_manuais["Pares"] = df_manuais.apply(lambda x: len([n for n in x if n % 2 == 0]), axis=1)
-            df_manuais["Ímpares"] = 15 - df_manuais["Pares"]
-            df_manuais["Moldura"] = df_manuais.apply(lambda x: len(set(x) & moldura), axis=1)
-            df_manuais["Repetidas com Último"] = df_manuais.apply(lambda x: len(set(x) & dezenas_ult), axis=1)
-
-            st.dataframe(df_manuais)
+        st.dataframe(df_manuais)
 
             st.subheader("📈 Gráfico Comparativo IA x Manual")
             cat = ["Soma", "Pares", "Ímpares", "Moldura", "Repetidas com Último"]
