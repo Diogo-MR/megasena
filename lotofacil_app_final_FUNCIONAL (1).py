@@ -53,6 +53,8 @@ if uploaded_file:
 
     jogos_passados = [set(linha) for linha in concursos[dezenas_cols].values.tolist()]
     repetidos_15 = 0
+    if st.button("🎯 Gerar Jogos com IA"):
+        X, y = [], []
         from random import sample, random
         jogos = []
         while len(jogos) < qtd_simulacao:
