@@ -51,6 +51,18 @@ if uploaded_file:
     qtd_ia = st.number_input("Quantos jogos a IA deve sugerir?", 1, 1000, 10)
     filtro_rep = st.slider("Mínimo de dezenas iguais ao último concurso", 0, 15, 7)
 
+    jogos_passados = [set(linha) for linha in concursos[dezenas_cols].values.tolist()]
+    repetidos_15 = 0
+    for i in range(len(jogos_passados)):
+        for j in range(i + 1, len(jogos_passados)):
+            if jogos_passados[i] == jogos_passados[j]:
+            repetidos_15 += 1
+
+    if repetidos_15 == 0:
+        st.info("📌 Nenhum jogo repetido com 15 dezenas foi encontrado no histórico da Lotofácil.")
+    else:
+        st.warning(f"⚠️ Foram encontrados {repetidos_15} jogos idênticos com 15 dezenas (algo muito raro).")
+    
     if st.button("🎯 Gerar Jogos com IA"):
         X, y = [], []
         for i in range(len(dados_filtro) - 1):
