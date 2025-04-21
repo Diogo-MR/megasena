@@ -53,23 +53,25 @@ if uploaded_file:
 
     jogos_passados = [set(linha) for linha in concursos[dezenas_cols].values.tolist()]
     repetidos_15 = 0
-    from random import sample, random
+    
+    if st.button("🧪 Simular Jogos Aleatórios"):    
+        from random import sample, random
 
-    jogos = []
-    while len(jogos) < qtd_simulacao:
-        jogo = sorted(sample(range(1, 26), 15))
-        pares = len([n for n in jogo if n % 2 == 0])
-        impares = 15 - pares
+        jogos = []
+        while len(jogos) < qtd_simulacao:
+            jogo = sorted(sample(range(1, 26), 15))
+            pares = len([n for n in jogo if n % 2 == 0])
+            impares = 15 - pares
 
-        if impares > pares or random() > 0.9:
-            jogos.append({
-                "Jogo": jogo,
-                "Pares": pares,
-                "Ímpares": impares,
-                "Soma": sum(jogo),
-                "Moldura": len(set(jogo) & moldura),
-                "Repetidas com Último": len(set(jogo) & dezenas_ult)
-            })
+            if impares > pares or random() > 0.9:
+                jogos.append({
+                    "Jogo": jogo,
+                    "Pares": pares,
+                    "Ímpares": impares,
+                    "Soma": sum(jogo),
+                    "Moldura": len(set(jogo) & moldura),
+                    "Repetidas com Último": len(set(jogo) & dezenas_ult)
+                })
 
     
     if repetidos_15 == 0:
