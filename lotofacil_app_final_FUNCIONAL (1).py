@@ -57,7 +57,6 @@ if uploaded_file:
         for j in range(i + 1, len(jogos_passados)):
             if jogos_passados[i] == jogos_passados[j]:
             repetidos_15 += 1
-
     if repetidos_15 == 0:
         st.info("📌 Nenhum jogo repetido com 15 dezenas foi encontrado no histórico da Lotofácil.")
     else:
