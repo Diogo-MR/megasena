@@ -54,7 +54,6 @@ if uploaded_file:
     jogos_passados = [set(linha) for linha in concursos[dezenas_cols].values.tolist()]
     repetidos_15 = 0
     
-    if st.button("🧪 Simular Jogos Aleatórios"):    
         from random import sample, random
 
         jogos = []
