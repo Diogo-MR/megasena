@@ -147,7 +147,7 @@ if uploaded_file:
         st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
         st.dataframe(pd.DataFrame(encontrados))
         
-    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 100, 10000, 1000, step=100)
+    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 1, 10000, 1000, step=1)
 
     if st.button("🧪 Simular Jogos Aleatórios"):
         resultados_sim = []
