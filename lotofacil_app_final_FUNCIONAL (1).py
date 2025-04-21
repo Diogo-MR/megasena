@@ -148,20 +148,33 @@ if uploaded_file:
         else:
             st.warning("Nenhum jogo obteve mais de 10 acertos nessa rodada.")
 
-    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 100, 10000, 1000, step=100)
+    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 1, 10000, 1000, step=100)
 
     if st.button("🧪 Simular Jogos Aleatórios"):
         resultados_sim = []
         for _ in range(qtd_simulacao):
             jogo = sorted(random.sample(range(1, 26), 15))
+            pares = len([n for n in jogo if n % 2 == 0])
+            impares = 15 - pares
+            repetidas = len(set(jogo) & dezenas_ult)
+            mold = len(set(jogo) & moldura)
+            soma = sum(jogo)
+
             for i, linha in enumerate(concursos[dezenas_cols].values):
-                acertos = len(set(jogo) & set(linha))
+                linha_valida = [n for n in linha if not pd.isna(n)]
+                acertos = len(set(jogo) & set(linha_valida))
+
                 if acertos >= 13:  # você pode mudar esse corte
                     resultados_sim.append({
                         "Jogo": jogo,
                         "Concurso": concursos.iloc[i]["Concurso"],
                         "Data": concursos.iloc[i]["Data Sorteio"],
-                        "Acertos": acertos
+                        "Acertos": acertos,
+                        "Repetidas com Último": repetidas,
+                        "Pares": pares,
+                        "Ímpares": impares,
+                        "Moldura": mold,
+                        "Soma": soma
                     })
                     break
 
@@ -171,4 +184,5 @@ if uploaded_file:
             st.dataframe(df_sim)
         else:
             st.warning("Nenhum jogo gerado atingiu 13 ou mais acertos.")
+
     
