@@ -1,20 +1,4 @@
 
-# ✅ MELHORIAS DE INTERFACE:
-# - Interface reorganizada com abas (tabs) para facilitar a navegação
-# - Separação entre: Análises, Jogos com IA, Simulações Aleatórias e Conferência
-# - Organização de seções para melhor visualização dos dados
-
-
-
-# ✅ AJUSTES REALIZADOS:
-# - Removido botão duplicado "🎯 Geração de Jogos com IA"
-# - Corrigida referência a 'repetidas', 'mold', 'soma' fora do escopo
-# - Reorganizado cálculo para garantir mais ímpares que pares (90%)
-# - Consolidado simulação aleatória com controle de blocos e distribuição final
-# - Padronizado uso de 'key' em inputs Streamlit
-
-
-
 # ✅ LotoFácil App - Versão Final
 # Gerador Inteligente com IA, estatísticas, simulação e gráfico comparativo
 # Desenvolvido por LottoGPT (o verdadeiro parceiro de bolão)
@@ -65,55 +49,17 @@ if uploaded_file:
 
     st.subheader("🎯 Geração de Jogos com IA")
     qtd_ia = st.number_input("Quantos jogos a IA deve sugerir?", 1, 1000, 10)
-    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja gerar?", 1, 10000, 1000, step=1, key="sim_aleatorio")
-    filtro_rep = st.slider("Mínimo de dezenas iguais ao último concurso", 0, 15, 8)
+    filtro_rep = st.slider("Mínimo de dezenas iguais ao último concurso", 0, 15, 7)
 
-    jogos_passados = [set(linha) for linha in concursos[dezenas_cols].values.tolist()]
-    repetidos_15 = 0
-    if st.button("🎯 Geração de Jogos com IA"):
-        X, y = [], []
-        from random import sample, random
-        jogos = []
-        while len(jogos) < qtd_simulacao:
-            jogo = sorted(sample(range(1, 26), 15))
-            pares = len([n for n in jogo if n % 2 == 0])
-            impares = 15 - pares
-
-            if impares > pares or random() > 0.9:
-                jogos.append({
-                    "Jogo": jogo,
-                    "Pares": pares,
-                    "Ímpares": impares,
-                    "Soma": sum(jogo),
-                    "Moldura": len(set(jogo) & moldura),
-                    "Repetidas com Último": len(set(jogo) & dezenas_ult)
-                })
-
-    
-    if repetidos_15 == 0:
-        st.info("📌 Nenhum jogo repetido com 15 dezenas foi encontrado no histórico da Lotofácil.")
-    else:
-        st.warning(f"⚠️ Foram encontrados {repetidos_15} jogos idênticos com 15 dezenas (algo muito raro).")
-    
     if st.button("🎯 Gerar Jogos com IA"):
         X, y = [], []
-        from random import sample, random
-
-        jogos = []
-        while len(jogos) < qtd_simulacao:
-            jogo = sorted(sample(range(1, 26), 15))
-            pares = len([n for n in jogo if n % 2 == 0])
-            impares = 15 - pares
-
-            if impares > pares or random() > 0.9:
-                jogos.append({
-                    "Jogo": jogo,
-                    "Pares": pares,
-                    "Ímpares": impares,
-                    "Soma": sum(jogo),
-                    "Moldura": len(set(jogo) & moldura),
-                    "Repetidas com Último": len(set(jogo) & dezenas_ult)
-                })
+        for i in range(len(dados_filtro) - 1):
+            atuais = set(dados_filtro.iloc[i][dezenas_cols])
+            proximas = set(dados_filtro.iloc[i + 1][dezenas_cols])
+            vetor = [1 if d in atuais else 0 for d in range(1, 26)]
+            acertos = len(atuais & proximas)
+            X.append(vetor)
+            y.append(1 if acertos >= 12 else 0)
 
         model = RandomForestClassifier(n_estimators=100, random_state=42)
         model.fit(X, y)
@@ -121,7 +67,7 @@ if uploaded_file:
         ranking = pd.Series(importances, index=range(1, 26)).sort_values(ascending=False)
 
         jogos = []
-        while len(jogos) < qtd_simulacao:
+        while len(jogos) < qtd_ia:
             jogo = sorted(ranking.sample(15).index.tolist())
             pares = len([n for n in jogo if n % 2 == 0])
             impares = 15 - pares
@@ -146,107 +92,46 @@ if uploaded_file:
         st.success(f"{len(jogos)} jogos gerados com base em validações estatísticas.")
         st.dataframe(df_ia)
 
-    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular até 15 acertos?", 1, 10000, 1000, step=1, key="sim15")
+    if st.button("🧪 Simular até acertar 15 dezenas"):
+        st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
+        tentativas = 0
+        encontrados = []
+        while True:
+            tentativas += 100
+            jogos_teste = []
+            while len(jogos_teste) < 100:
+                jogo = sorted(random.sample(range(1, 26), 15))
+                pares = len([n for n in jogo if n % 2 == 0])
+                if 6 <= pares <= 9:
+                    jogos_teste.append(jogo)
+            for jogo in jogos_teste:
+                for i, linha in enumerate(concursos[dezenas_cols].values):
+                    acertos = len(set(jogo) & set(linha))
+                    if acertos == 15:
+                        repetidas = len(set(jogo) & dezenas_ult)
+                        moldura = len(set(jogo) & moldura)
+                        soma = sum(jogo)
+                        pares = len([n for n in jogo if n % 2 == 0])
+                        impares = 15 - pares
 
-    if st.button("🧪 Simular até 15 acertos (todos os jogos)", key="simulador_full"):
-        st.subheader("🔍 Rodando simulações...")
-        resultados_sim = []
-        from random import sample, random
-
-        jogos = []
-        while len(jogos) < qtd_simulacao:
-            jogo = sorted(sample(range(1, 26), 15))
-            pares = len([n for n in jogo if n % 2 == 0])
-            impares = 15 - pares
-
-            if impares > pares or random() > 0.9:
-                jogos.append({
-                    "Jogo": jogo,
-                    "Pares": pares,
-                    "Ímpares": impares,
-                    "Soma": sum(jogo),
-                    "Moldura": len(set(jogo) & moldura),
-                    "Repetidas com Último": len(set(jogo) & dezenas_ult)
-                })
-
-            for i, linha in enumerate(concursos[dezenas_cols].values):
-                linha_valida = [n for n in linha if not pd.isna(n)]
-                acertos = len(set(jogo) & set(linha_valida))
-
-                if acertos >= 11:  # considerar a partir de 11 acertos
-                    resultados_sim.append({
-                        "Jogo": jogo,
-                        "Acertos": acertos,
-                        "Concurso": concursos.iloc[i]["Concurso"],
-                        "Data": concursos.iloc[i]["Data Sorteio"],
-                        "Repetidas com Último": repetidas,
-                        "Pares": pares,
-                        "Ímpares": impares,
-                        "Moldura": mold,
-                        "Soma": soma
-                    })
+                        encontrados.append({
+                            "Jogo": jogo,
+                            "Concurso": concursos.iloc[i]["Concurso"],
+                            "Data": concursos.iloc[i]["Data Sorteio"],
+                            "Acertos": acertos,
+                            "Total Jogos Simulados": tentativas,
+                            "Repetidas": repetidas,
+                            "Pares": pares,
+                            "Ímpares": impares,
+                            "Moldura": moldura,
+                            "Soma": soma
+                        })
+                        break
+                if encontrados:
                     break
+            if encontrados:
+                break
 
-        if resultados_sim:
-            df_sim = pd.DataFrame(resultados_sim)
-            st.success(f"{len(df_sim)} jogos com 11+ acertos encontrados em {qtd_simulacao} simulados.")
-            st.dataframe(df_sim)
-
-            st.download_button("📥 Baixar resultado (CSV)", data=df_sim.to_csv(index=False).encode("utf-8"),
-                               file_name="simulacoes_lotofacil.csv", mime="text/csv")
-
-            st.markdown("📊 Distribuição de acertos:")
-            st.bar_chart(df_sim["Acertos"].value_counts().sort_index())
-
-        else:
-            st.warning("Nenhum jogo obteve mais de 10 acertos nessa rodada.")
-
-        
-    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 1, 10000, 1000, step=1)
-
-    if st.button("🧪 Simular Jogos Aleatórios"):
-        resultados_sim = []
-        from random import sample, random
-
-        jogos = []
-        while len(jogos) < qtd_simulacao:
-            jogo = sorted(sample(range(1, 26), 15))
-            pares = len([n for n in jogo if n % 2 == 0])
-            impares = 15 - pares
-
-            if impares > pares or random() > 0.9:
-                jogos.append({
-                    "Jogo": jogo,
-                    "Pares": pares,
-                    "Ímpares": impares,
-                    "Soma": sum(jogo),
-                    "Moldura": len(set(jogo) & moldura),
-                    "Repetidas com Último": len(set(jogo) & dezenas_ult)
-                })
-
-            for i, linha in enumerate(concursos[dezenas_cols].values):
-                linha_valida = [n for n in linha if not pd.isna(n)]
-                acertos = len(set(jogo) & set(linha_valida))
-
-                if acertos >= 13:  # você pode mudar esse corte
-                    resultados_sim.append({
-                        "Jogo": jogo,
-                        "Concurso": concursos.iloc[i]["Concurso"],
-                        "Data": concursos.iloc[i]["Data Sorteio"],
-                        "Acertos": acertos,
-                        "Repetidas com Último": repetidas,
-                        "Pares": pares,
-                        "Ímpares": impares,
-                        "Moldura": mold,
-                        "Soma": soma
-                    })
-                    break
-
-        if resultados_sim:
-            df_sim = pd.DataFrame(resultados_sim)
-            st.success(f"{len(df_sim)} jogos com 13+ acertos encontrados.")
-            st.dataframe(df_sim)
-        else:
-            st.warning("Nenhum jogo gerado atingiu 13 ou mais acertos.")
-
+        st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
+        st.dataframe(pd.DataFrame(encontrados))
         
