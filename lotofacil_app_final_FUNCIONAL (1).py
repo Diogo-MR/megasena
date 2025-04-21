@@ -48,7 +48,6 @@ if uploaded_file:
     atrasadas = set(range(1,26)) - set(todas_dezenas)
 
     st.subheader("🎯 Geração de Jogos com IA")
-    qtd_ia = st.number_input("Quantos jogos a IA deve sugerir?", 1, 1000, 10)
     qtd_simulacao = st.number_input("🔢 Quantos jogos deseja gerar?", 1, 10000, 1000, step=1, key="sim_aleatorio")
     filtro_rep = st.slider("Mínimo de dezenas iguais ao último concurso", 0, 15, 8)
     
