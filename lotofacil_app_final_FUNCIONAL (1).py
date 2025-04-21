@@ -49,7 +49,7 @@ if uploaded_file:
 
     st.subheader("🎯 Geração de Jogos com IA")
     qtd_ia = st.number_input("Quantos jogos a IA deve sugerir?", 1, 1000, 10)
-    filtro_rep = st.slider("Mínimo de dezenas iguais ao último concurso", 0, 15, 7)
+    filtro_rep = st.slider("Mínimo de dezenas iguais ao último concurso", 0, 15, 8)
 
     jogos_passados = [set(linha) for linha in concursos[dezenas_cols].values.tolist()]
     repetidos_15 = 0
@@ -104,6 +104,8 @@ if uploaded_file:
         st.success(f"{len(jogos)} jogos gerados com base em validações estatísticas.")
         st.dataframe(df_ia)
 
+    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 1, 10000, 1000, step=1)
+  
     if st.button("🧪 Simular até acertar 15 dezenas"):
         st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
         tentativas = 0
@@ -160,7 +162,12 @@ if uploaded_file:
                         "Jogo": jogo,
                         "Concurso": concursos.iloc[i]["Concurso"],
                         "Data": concursos.iloc[i]["Data Sorteio"],
-                        "Acertos": acertos
+                        "Acertos": acertos,
+                        "Repetidas com Último": repetidas,
+                        "Pares": pares,
+                        "Ímpares": impares,
+                        "Moldura": mold,
+                        "Soma": soma
                     })
                     break
 
