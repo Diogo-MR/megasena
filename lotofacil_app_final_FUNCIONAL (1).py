@@ -153,16 +153,16 @@ if uploaded_file:
             if encontrados:
                 break
 
-    if encontrados:
-        df_result = pd.DataFrame(encontrados)
-        st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
-        st.dataframe(df_result)
-    else:
-        st.warning("🚫 Nenhum jogo com 15 acertos encontrado com essa quantidade de simulações.")
+        if encontrados:
+            df_result = pd.DataFrame(encontrados)
+            st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
+            st.dataframe(df_result)
+        else:
+            st.warning("🚫 Nenhum jogo com 15 acertos encontrado com essa quantidade de simulações.")
 
 
-        st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
-        st.dataframe(pd.DataFrame(encontrados))
+            st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
+            st.dataframe(pd.DataFrame(encontrados))
         
     qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 1, 10000, 1000, step=1)
 
