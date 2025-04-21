@@ -53,10 +53,24 @@ if uploaded_file:
 
     jogos_passados = [set(linha) for linha in concursos[dezenas_cols].values.tolist()]
     repetidos_15 = 0
-    for i in range(len(jogos_passados)):
-        for j in range(i + 1, len(jogos_passados)):
-            if jogos_passados[i] == jogos_passados[j]:
-                repetidos_15 += 1
+    from random import sample, random
+
+    jogos = []
+    while len(jogos) < qtd_simulacao:
+        jogo = sorted(sample(range(1, 26), 15))
+        pares = len([n for n in jogo if n % 2 == 0])
+        impares = 15 - pares
+
+        if impares > pares or random() > 0.9:
+            jogos.append({
+                "Jogo": jogo,
+                "Pares": pares,
+                "Ímpares": impares,
+                "Soma": sum(jogo),
+                "Moldura": len(set(jogo) & moldura),
+                "Repetidas com Último": len(set(jogo) & dezenas_ult)
+            })
+
     
     if repetidos_15 == 0:
         st.info("📌 Nenhum jogo repetido com 15 dezenas foi encontrado no histórico da Lotofácil.")
@@ -65,13 +79,23 @@ if uploaded_file:
     
     if st.button("🎯 Gerar Jogos com IA"):
         X, y = [], []
-        for i in range(len(dados_filtro) - 1):
-            atuais = set(dados_filtro.iloc[i][dezenas_cols])
-            proximas = set(dados_filtro.iloc[i + 1][dezenas_cols])
-            vetor = [1 if d in atuais else 0 for d in range(1, 26)]
-            acertos = len(atuais & proximas)
-            X.append(vetor)
-            y.append(1 if acertos >= 12 else 0)
+        from random import sample, random
+
+        jogos = []
+        while len(jogos) < qtd_simulacao:
+            jogo = sorted(sample(range(1, 26), 15))
+            pares = len([n for n in jogo if n % 2 == 0])
+            impares = 15 - pares
+
+            if impares > pares or random() > 0.9:
+                jogos.append({
+                    "Jogo": jogo,
+                    "Pares": pares,
+                    "Ímpares": impares,
+                    "Soma": sum(jogo),
+                    "Moldura": len(set(jogo) & moldura),
+                    "Repetidas com Último": len(set(jogo) & dezenas_ult)
+                })
 
         model = RandomForestClassifier(n_estimators=100, random_state=42)
         model.fit(X, y)
@@ -109,13 +133,23 @@ if uploaded_file:
     if st.button("🧪 Simular até 15 acertos (todos os jogos)", key="simulador_full"):
         st.subheader("🔍 Rodando simulações...")
         resultados_sim = []
-        for _ in range(qtd_simulacao):
-            jogo = sorted(random.sample(range(1, 26), 15))
+        from random import sample, random
+
+        jogos = []
+        while len(jogos) < qtd_simulacao:
+            jogo = sorted(sample(range(1, 26), 15))
             pares = len([n for n in jogo if n % 2 == 0])
             impares = 15 - pares
-            repetidas = len(set(jogo) & dezenas_ult)
-            mold = len(set(jogo) & moldura)
-            soma = sum(jogo)
+
+            if impares > pares or random() > 0.9:
+                jogos.append({
+                    "Jogo": jogo,
+                    "Pares": pares,
+                    "Ímpares": impares,
+                    "Soma": sum(jogo),
+                    "Moldura": len(set(jogo) & moldura),
+                    "Repetidas com Último": len(set(jogo) & dezenas_ult)
+                })
 
             for i, linha in enumerate(concursos[dezenas_cols].values):
                 linha_valida = [n for n in linha if not pd.isna(n)]
@@ -154,13 +188,23 @@ if uploaded_file:
 
     if st.button("🧪 Simular Jogos Aleatórios"):
         resultados_sim = []
-        for _ in range(qtd_simulacao):
-            jogo = sorted(random.sample(range(1, 26), 15))
+        from random import sample, random
+
+        jogos = []
+        while len(jogos) < qtd_simulacao:
+            jogo = sorted(sample(range(1, 26), 15))
             pares = len([n for n in jogo if n % 2 == 0])
             impares = 15 - pares
-            repetidas = len(set(jogo) & dezenas_ult)
-            mold = len(set(jogo) & moldura)
-            soma = sum(jogo)
+
+            if impares > pares or random() > 0.9:
+                jogos.append({
+                    "Jogo": jogo,
+                    "Pares": pares,
+                    "Ímpares": impares,
+                    "Soma": sum(jogo),
+                    "Moldura": len(set(jogo) & moldura),
+                    "Repetidas com Último": len(set(jogo) & dezenas_ult)
+                })
 
             for i, linha in enumerate(concursos[dezenas_cols].values):
                 linha_valida = [n for n in linha if not pd.isna(n)]
