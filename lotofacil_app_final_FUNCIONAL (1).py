@@ -112,7 +112,7 @@ if uploaded_file:
         encontrados = []
         while True:
             tentativas += 100
-            jogos_teste = []
+            jogos_teste = [qtd_simulacao]
             while len(jogos_teste) < 100:
                 jogo = sorted(random.sample(range(1, 26), 15))
                 pares = len([n for n in jogo if n % 2 == 0])
