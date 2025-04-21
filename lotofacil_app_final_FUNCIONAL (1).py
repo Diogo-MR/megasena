@@ -104,65 +104,51 @@ if uploaded_file:
         st.success(f"{len(jogos)} jogos gerados com base em validações estatísticas.")
         st.dataframe(df_ia)
 
-    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular 15 acertos?", 1, 10000, 1000, step=1, key="sim15")
+    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular até 15 acertos?", 1, 10000, 1000, step=1, key="sim15")
 
-    if st.button("🧪 Simular até acertar 15 dezenas"):
-        st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
-        tentativas = 0
-        encontrados = []
+    if st.button("🧪 Simular até 15 acertos (todos os jogos)", key="simulador_full"):
+        st.subheader("🔍 Rodando simulações...")
+        resultados_sim = []
+        for _ in range(qtd_simulacao):
+            jogo = sorted(random.sample(range(1, 26), 15))
+            pares = len([n for n in jogo if n % 2 == 0])
+            impares = 15 - pares
+            repetidas = len(set(jogo) & dezenas_ult)
+            mold = len(set(jogo) & moldura)
+            soma = sum(jogo)
 
-        while tentativas < qtd_simulacao:
-            tentativas += 100
-            jogos_teste = []
-            while len(jogos_teste) < 100:
-                jogo = sorted(random.sample(range(1, 26), 15))
-                pares = len([n for n in jogo if n % 2 == 0])
-                if 6 <= pares <= 9:
-                    jogos_teste.append(jogo)
+            for i, linha in enumerate(concursos[dezenas_cols].values):
+                linha_valida = [n for n in linha if not pd.isna(n)]
+                acertos = len(set(jogo) & set(linha_valida))
 
-            for jogo in jogos_teste:
-                for i, linha in enumerate(concursos[dezenas_cols].values):
-                    try:
-                        linha_valida = [n for n in linha if not pd.isna(n)]
-                        acertos = len(set(jogo) & set(linha_valida))
-                    except:
-                        continue
-
-                    if acertos == 15:
-                        repetidas = len(set(jogo) & dezenas_ult)
-                        mold = len(set(jogo) & moldura)
-                        soma = sum(jogo)
-                        pares = len([n for n in jogo if n % 2 == 0])
-                        impares = 15 - pares
-
-                        encontrados.append({
-                            "Jogo": jogo,
-                            "Concurso": concursos.iloc[i]["Concurso"],
-                            "Data": concursos.iloc[i]["Data Sorteio"],
-                            "Acertos": acertos,
-                            "Total Jogos Simulados": tentativas,
-                            "Repetidas": repetidas,
-                            "Pares": pares,
-                            "Ímpares": impares,
-                            "Moldura": mold,
-                            "Soma": soma
-                        })
-                        break
-                if encontrados:
+                if acertos >= 11:  # considerar a partir de 11 acertos
+                    resultados_sim.append({
+                        "Jogo": jogo,
+                        "Acertos": acertos,
+                        "Concurso": concursos.iloc[i]["Concurso"],
+                        "Data": concursos.iloc[i]["Data Sorteio"],
+                        "Repetidas com Último": repetidas,
+                        "Pares": pares,
+                        "Ímpares": impares,
+                        "Moldura": mold,
+                        "Soma": soma
+                    })
                     break
-            if encontrados:
-                break
 
-        if encontrados:
-            df_result = pd.DataFrame(encontrados)
-            st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
-            st.dataframe(df_result)
+        if resultados_sim:
+            df_sim = pd.DataFrame(resultados_sim)
+            st.success(f"{len(df_sim)} jogos com 11+ acertos encontrados em {qtd_simulacao} simulados.")
+            st.dataframe(df_sim)
+
+            st.download_button("📥 Baixar resultado (CSV)", data=df_sim.to_csv(index=False).encode("utf-8"),
+                               file_name="simulacoes_lotofacil.csv", mime="text/csv")
+
+            st.markdown("📊 Distribuição de acertos:")
+            st.bar_chart(df_sim["Acertos"].value_counts().sort_index())
+
         else:
-            st.warning("🚫 Nenhum jogo com 15 acertos encontrado com essa quantidade de simulações.")
+            st.warning("Nenhum jogo obteve mais de 10 acertos nessa rodada.")
 
-
-            st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
-            st.dataframe(pd.DataFrame(encontrados))
         
     qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 1, 10000, 1000, step=1)
 
@@ -170,8 +156,16 @@ if uploaded_file:
         resultados_sim = []
         for _ in range(qtd_simulacao):
             jogo = sorted(random.sample(range(1, 26), 15))
+            pares = len([n for n in jogo if n % 2 == 0])
+            impares = 15 - pares
+            repetidas = len(set(jogo) & dezenas_ult)
+            mold = len(set(jogo) & moldura)
+            soma = sum(jogo)
+
             for i, linha in enumerate(concursos[dezenas_cols].values):
-                acertos = len(set(jogo) & set(linha))
+                linha_valida = [n for n in linha if not pd.isna(n)]
+                acertos = len(set(jogo) & set(linha_valida))
+
                 if acertos >= 13:  # você pode mudar esse corte
                     resultados_sim.append({
                         "Jogo": jogo,
