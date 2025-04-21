@@ -51,33 +51,6 @@ if uploaded_file:
     qtd_ia = st.number_input("Quantos jogos a IA deve sugerir?", 1, 1000, 10)
     qtd_simulacao = st.number_input("🔢 Quantos jogos deseja gerar?", 1, 10000, 1000, step=1, key="sim_aleatorio")
     filtro_rep = st.slider("Mínimo de dezenas iguais ao último concurso", 0, 15, 8)
-
-    jogos_passados = [set(linha) for linha in concursos[dezenas_cols].values.tolist()]
-    repetidos_15 = 0
-    if st.button("🎯 Geração de Jogos com IA"):
-        X, y = [], []
-        from random import sample, random
-        jogos = []
-        while len(jogos) < qtd_simulacao:
-            jogo = sorted(sample(range(1, 26), 15))
-            pares = len([n for n in jogo if n % 2 == 0])
-            impares = 15 - pares
-
-            if impares > pares or random() > 0.9:
-                jogos.append({
-                    "Jogo": jogo,
-                    "Pares": pares,
-                    "Ímpares": impares,
-                    "Soma": sum(jogo),
-                    "Moldura": len(set(jogo) & moldura),
-                    "Repetidas com Último": len(set(jogo) & dezenas_ult)
-                })
-
-    
-    if repetidos_15 == 0:
-        st.info("📌 Nenhum jogo repetido com 15 dezenas foi encontrado no histórico da Lotofácil.")
-    else:
-        st.warning(f"⚠️ Foram encontrados {repetidos_15} jogos idênticos com 15 dezenas (algo muito raro).")
     
     if st.button("🎯 Gerar Jogos com IA"):
         X, y = [], []
