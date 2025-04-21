@@ -53,8 +53,7 @@ if uploaded_file:
 
     jogos_passados = [set(linha) for linha in concursos[dezenas_cols].values.tolist()]
     repetidos_15 = 0
-    
-        from random import sample, random
+    from random import sample, random
 
         jogos = []
         while len(jogos) < qtd_simulacao:
