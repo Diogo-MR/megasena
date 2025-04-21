@@ -56,7 +56,8 @@ if uploaded_file:
     for i in range(len(jogos_passados)):
         for j in range(i + 1, len(jogos_passados)):
             if jogos_passados[i] == jogos_passados[j]:
-            repetidos_15 += 1
+                repetidos_15 += 1
+    
     if repetidos_15 == 0:
         st.info("📌 Nenhum jogo repetido com 15 dezenas foi encontrado no histórico da Lotofácil.")
     else:
@@ -145,4 +146,29 @@ if uploaded_file:
 
         st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
         st.dataframe(pd.DataFrame(encontrados))
+        
+    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 100, 10000, 1000, step=100)
+
+    if st.button("🧪 Simular Jogos Aleatórios"):
+        resultados_sim = []
+        for _ in range(qtd_simulacao):
+            jogo = sorted(random.sample(range(1, 26), 15))
+            for i, linha in enumerate(concursos[dezenas_cols].values):
+                acertos = len(set(jogo) & set(linha))
+                if acertos >= 13:  # você pode mudar esse corte
+                    resultados_sim.append({
+                        "Jogo": jogo,
+                        "Concurso": concursos.iloc[i]["Concurso"],
+                        "Data": concursos.iloc[i]["Data Sorteio"],
+                        "Acertos": acertos
+                    })
+                    break
+
+        if resultados_sim:
+            df_sim = pd.DataFrame(resultados_sim)
+            st.success(f"{len(df_sim)} jogos com 13+ acertos encontrados.")
+            st.dataframe(df_sim)
+        else:
+            st.warning("Nenhum jogo gerado atingiu 13 ou mais acertos.")
+
         
