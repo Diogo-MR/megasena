@@ -104,7 +104,7 @@ if uploaded_file:
         st.success(f"{len(jogos)} jogos gerados com base em validações estatísticas.")
         st.dataframe(df_ia)
 
-    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular?", 1, 10000, 1000, step=1)
+    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular 15 acertos?", 1, 10000, 1000, step=1)
   
     if st.button("🧪 Simular até acertar 15 dezenas"):
         st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
