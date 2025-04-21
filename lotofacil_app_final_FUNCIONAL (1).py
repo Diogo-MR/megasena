@@ -92,35 +92,6 @@ if uploaded_file:
         st.success(f"{len(jogos)} jogos gerados com base em validações estatísticas.")
         st.dataframe(df_ia)
 
-        st.subheader("📁 Meus Jogos Favoritos (selecionados da IA)")
-        if "jogos_salvos" not in st.session_state:
-            st.session_state.jogos_salvos = []
-            
-        if "Dezenas" in df_ia.columns:
-            for idx, row in df_ia.iterrows():
-                col1, col2 = st.columns([3, 1])
-                with col1:
-                    st.markdown(f"**Jogo {idx+1}:** {' '.join([str(d).zfill(2) for d in row['Dezenas']])}")
-                with col2:
-                    if st.button(f"✅ Salvar jogo {idx+1}", key=f"salvar_{idx}"):
-                        if row["Dezenas"] not in st.session_state.jogos_salvos:
-                            st.session_state.jogos_salvos.append(row["Dezenas"])
-                            st.success(f"Jogo {idx+1} salvo!")
-
-        if st.session_state.jogos_salvos:
-            st.subheader("🎯 Conferir Jogos Salvos com Último Concurso")
-            resultados_fav = []
-            for i, jogo in enumerate(st.session_state.jogos_salvos):
-                acertos = len(set(jogo) & dezenas_ult)
-                resultados_fav.append({
-                    "Jogo Nº": i + 1,
-                    "Dezenas": jogo,
-                    "Acertos com Último Concurso": acertos
-                })
-
-        df_fav = pd.DataFrame(resultados_fav)
-        st.dataframe(df_fav)
-   
     if st.button("🧪 Simular até acertar 15 dezenas"):
         st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
         tentativas = 0
