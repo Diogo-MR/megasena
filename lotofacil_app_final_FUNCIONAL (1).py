@@ -48,7 +48,7 @@ if uploaded_file:
     atrasadas = set(range(1,26)) - set(todas_dezenas)
 
     st.subheader("🎯 Geração de Jogos com IA")
-    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja gerar?", 1, 10000, 1000, step=1, key="sim_aleatorio")
+    qtd_ia = st.number_input("Quantos jogos a IA deve sugerir?", 1, 1000, 10) 
     filtro_rep = st.slider("Mínimo de dezenas iguais ao último concurso", 0, 15, 8)
     
     if st.button("🎯 Gerar Jogos com IA"):
@@ -56,7 +56,7 @@ if uploaded_file:
         from random import sample, random
 
         jogos = []
-        while len(jogos) < qtd_simulacao:
+        while len(jogos) < qtd_ia:
             jogo = sorted(sample(range(1, 26), 15))
             pares = len([n for n in jogo if n % 2 == 0])
             impares = 15 - pares
@@ -77,7 +77,7 @@ if uploaded_file:
         ranking = pd.Series(importances, index=range(1, 26)).sort_values(ascending=False)
 
         jogos = []
-        while len(jogos) < qtd_simulacao:
+        while len(jogos) < qtd_ia:
             jogo = sorted(ranking.sample(15).index.tolist())
             pares = len([n for n in jogo if n % 2 == 0])
             impares = 15 - pares
