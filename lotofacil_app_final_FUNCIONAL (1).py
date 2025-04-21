@@ -104,26 +104,33 @@ if uploaded_file:
         st.success(f"{len(jogos)} jogos gerados com base em validações estatísticas.")
         st.dataframe(df_ia)
 
-    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular 15 acertos?", 1, 10000, 1000, step=1)
-  
+    qtd_simulacao = st.number_input("🔢 Quantos jogos deseja simular 15 acertos?", 1, 10000, 1000, step=1, key="sim15")
+
     if st.button("🧪 Simular até acertar 15 dezenas"):
         st.subheader("🔍 Iniciando simulação por blocos até 15 acertos")
         tentativas = 0
         encontrados = []
-        while True:
+
+        while tentativas < qtd_simulacao:
             tentativas += 100
-            jogos_teste = [qtd_simulacao]
+            jogos_teste = []
             while len(jogos_teste) < 100:
                 jogo = sorted(random.sample(range(1, 26), 15))
                 pares = len([n for n in jogo if n % 2 == 0])
                 if 6 <= pares <= 9:
                     jogos_teste.append(jogo)
+
             for jogo in jogos_teste:
                 for i, linha in enumerate(concursos[dezenas_cols].values):
-                    acertos = len(set(jogo) & set(linha))
+                    try:
+                        linha_valida = [n for n in linha if not pd.isna(n)]
+                        acertos = len(set(jogo) & set(linha_valida))
+                    except:
+                        continue
+
                     if acertos == 15:
                         repetidas = len(set(jogo) & dezenas_ult)
-                        moldura = len(set(jogo) & moldura)
+                        mold = len(set(jogo) & moldura)
                         soma = sum(jogo)
                         pares = len([n for n in jogo if n % 2 == 0])
                         impares = 15 - pares
@@ -137,7 +144,7 @@ if uploaded_file:
                             "Repetidas": repetidas,
                             "Pares": pares,
                             "Ímpares": impares,
-                            "Moldura": moldura,
+                            "Moldura": mold,
                             "Soma": soma
                         })
                         break
@@ -145,6 +152,14 @@ if uploaded_file:
                     break
             if encontrados:
                 break
+
+    if encontrados:
+        df_result = pd.DataFrame(encontrados)
+        st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
+        st.dataframe(df_result)
+    else:
+        st.warning("🚫 Nenhum jogo com 15 acertos encontrado com essa quantidade de simulações.")
+
 
         st.success(f"🎯 Jogo com 15 acertos encontrado após {tentativas} jogos simulados!")
         st.dataframe(pd.DataFrame(encontrados))
