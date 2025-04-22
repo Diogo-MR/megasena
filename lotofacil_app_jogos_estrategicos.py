@@ -18,6 +18,7 @@ uploaded_file = st.file_uploader("📤 Envie o arquivo .xlsx com os concursos da
 
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
+    concursos = df[['Concurso'] + dezenas_cols].dropna()
     dezenas_cols = [col for col in df.columns if "Bola" in col]
     concursos = df[["Concurso", "Data Sorteio"] + dezenas_cols].dropna()
 
