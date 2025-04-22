@@ -17,6 +17,65 @@ st.title("🍀 Simulador Inteligente da Lotofácil - IA & Estratégia Total")
 uploaded_file = st.file_uploader("📤 Envie o arquivo .xlsx com os concursos da Lotofácil", type="xlsx")
 
 if uploaded_file:
+st.subheader("🔮 Geração de Jogos Estratégicos com Base Estatística")
+    
+    qtd_jogos_estrategicos = st.number_input("Quantos jogos deseja gerar?", min_value=1, max_value=1000, value=10, step=1, key="estrategicos")
+    
+    # Frequentes e atrasadas
+    todas_dezenas = concursos[dezenas_cols].values.ravel()
+    frequencia_geral = pd.Series(todas_dezenas).value_counts().sort_values(ascending=False)
+    mais_frequentes = list(frequencia_geral.head(25).index)
+    menos_frequentes = list(frequencia_geral.tail(5).index)
+    
+    # Último sorteio e moldura
+    ult_sorteio = set(concursos.iloc[-1][dezenas_cols])
+    moldura = {1, 2, 3, 4, 5, 6, 10, 11, 15, 16, 20, 21, 22, 23, 24, 25}
+    
+    jogos_estrategicos = []
+    tentativas = 0
+    qtd_dezenas = st.selectbox("🔢 Quantidade de dezenas por jogo", [15, 16, 17, 18, 19, 20], index=0, key="estrategico_dezenas")
+    
+    while len(jogos_estrategicos) < qtd_jogos_estrategicos and tentativas < 5000:
+        tentativas += 1
+        jogo = sorted(random.sample(mais_frequentes, qtd_dezenas))
+        pares = len([n for n in jogo if n % 2 == 0])
+        impares = qtd_dezenas - pares
+        soma = sum(jogo)
+        repetidas = len(set(jogo) & ult_sorteio)
+        qtd_moldura = len(set(jogo) & moldura)
+        qtd_atrasadas = len(set(jogo) & set(menos_frequentes))
+    
+        if (
+            impares > pares and
+            180 <= soma <= 240 and
+            5 <= qtd_moldura <= 13 and
+            4 <= repetidas <= 10 and
+            qtd_atrasadas <= 3
+        ):
+            jogos_estrategicos.append({
+                "Dezenas": jogo,
+                "Soma": soma,
+                "Pares": pares,
+                "Ímpares": impares,
+                "Moldura": qtd_moldura,
+                "Repetidas com Último": repetidas,
+                "Menos Frequentes": qtd_atrasadas
+            })
+    
+    if jogos_estrategicos:
+        df_estrategico = pd.DataFrame(jogos_estrategicos)
+        st.success(f"{len(df_estrategico)} jogos estratégicos gerados com base nos filtros estatísticos.")
+        st.dataframe(df_estrategico)
+    
+        st.download_button("📥 Baixar Jogos Estratégicos em CSV",
+                           data=df_estrategico.to_csv(index=False).encode("utf-8"),
+                           file_name="jogos_estrategicos.csv",
+                           mime="text/csv")
+    
+        st.markdown("📊 Dica: A Caixa Econômica Federal estima que com 30 jogos (apostando 15 dezenas) suas chances de acertar 15 pontos são de **1 em ~109.000**.")
+    else:
+        st.warning("Nenhum jogo estratégico pôde ser gerado com os critérios definidos. Tente ajustar as condições ou quantidade.")
+    
     df = pd.read_excel(uploaded_file)
     dezenas_cols = [col for col in df.columns if "Bola" in col]
     concursos = df[["Concurso", "Data Sorteio"] + dezenas_cols].dropna()
@@ -224,61 +283,3 @@ st.markdown(f"""
 """)
 
 
-st.subheader("🔮 Geração de Jogos Estratégicos com Base Estatística")
-
-qtd_jogos_estrategicos = st.number_input("Quantos jogos deseja gerar?", min_value=1, max_value=1000, value=10, step=1, key="estrategicos")
-
-# Frequentes e atrasadas
-todas_dezenas = concursos[dezenas_cols].values.ravel()
-frequencia_geral = pd.Series(todas_dezenas).value_counts().sort_values(ascending=False)
-mais_frequentes = list(frequencia_geral.head(25).index)
-menos_frequentes = list(frequencia_geral.tail(5).index)
-
-# Último sorteio e moldura
-ult_sorteio = set(concursos.iloc[-1][dezenas_cols])
-moldura = {1, 2, 3, 4, 5, 6, 10, 11, 15, 16, 20, 21, 22, 23, 24, 25}
-
-jogos_estrategicos = []
-tentativas = 0
-qtd_dezenas = st.selectbox("🔢 Quantidade de dezenas por jogo", [15, 16, 17, 18, 19, 20], index=0, key="estrategico_dezenas")
-
-while len(jogos_estrategicos) < qtd_jogos_estrategicos and tentativas < 5000:
-    tentativas += 1
-    jogo = sorted(random.sample(mais_frequentes, qtd_dezenas))
-    pares = len([n for n in jogo if n % 2 == 0])
-    impares = qtd_dezenas - pares
-    soma = sum(jogo)
-    repetidas = len(set(jogo) & ult_sorteio)
-    qtd_moldura = len(set(jogo) & moldura)
-    qtd_atrasadas = len(set(jogo) & set(menos_frequentes))
-
-    if (
-        impares > pares and
-        180 <= soma <= 240 and
-        5 <= qtd_moldura <= 13 and
-        4 <= repetidas <= 10 and
-        qtd_atrasadas <= 3
-    ):
-        jogos_estrategicos.append({
-            "Dezenas": jogo,
-            "Soma": soma,
-            "Pares": pares,
-            "Ímpares": impares,
-            "Moldura": qtd_moldura,
-            "Repetidas com Último": repetidas,
-            "Menos Frequentes": qtd_atrasadas
-        })
-
-if jogos_estrategicos:
-    df_estrategico = pd.DataFrame(jogos_estrategicos)
-    st.success(f"{len(df_estrategico)} jogos estratégicos gerados com base nos filtros estatísticos.")
-    st.dataframe(df_estrategico)
-
-    st.download_button("📥 Baixar Jogos Estratégicos em CSV",
-                       data=df_estrategico.to_csv(index=False).encode("utf-8"),
-                       file_name="jogos_estrategicos.csv",
-                       mime="text/csv")
-
-    st.markdown("📊 Dica: A Caixa Econômica Federal estima que com 30 jogos (apostando 15 dezenas) suas chances de acertar 15 pontos são de **1 em ~109.000**.")
-else:
-    st.warning("Nenhum jogo estratégico pôde ser gerado com os critérios definidos. Tente ajustar as condições ou quantidade.")
