@@ -20,7 +20,6 @@ if uploaded_file:
     df = pd.read_excel(uploaded_file)
     dezenas_cols = [col for col in df.columns if "Bola" in col]
     concursos = df[["Concurso", "Data Sorteio"] + dezenas_cols].dropna()
-    concursos = df[['Concurso'] + dezenas_cols].dropna()
     
     ult = concursos.iloc[-1]
     penult = concursos.iloc[-2]
