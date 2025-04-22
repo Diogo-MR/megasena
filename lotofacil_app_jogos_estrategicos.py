@@ -196,7 +196,7 @@ qtd_jogos_estrategicos = st.number_input("Quantos jogos deseja gerar?", min_valu
 # Frequentes e atrasadas
 todas_dezenas = concursos[dezenas_cols].values.ravel()
 frequencia_geral = pd.Series(todas_dezenas).value_counts().sort_values(ascending=False)
-mais_frequentes = list(frequencia_geral.head(20).index)
+mais_frequentes = list(frequencia_geral.head(25).index)
 menos_frequentes = list(frequencia_geral.tail(5).index)
 
 # Último sorteio e moldura
@@ -219,9 +219,9 @@ while len(jogos_estrategicos) < qtd_jogos_estrategicos and tentativas < 5000:
 
     if (
         impares > pares and
-        180 <= soma <= 220 and
-        6 <= qtd_moldura <= 11 and
-        5 <= repetidas <= 9 and
+        180 <= soma <= 240 and
+        5 <= qtd_moldura <= 13 and
+        4 <= repetidas <= 10 and
         qtd_atrasadas <= 3
     ):
         jogos_estrategicos.append({
