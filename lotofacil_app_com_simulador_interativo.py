@@ -190,38 +190,38 @@ if uploaded_file:
 
 
 
-st.subheader("🧮 Simulador Interativo: Probabilidades e Custos por Quantidade de Dezenas")
+    st.subheader("🧮 Simulador Interativo: Probabilidades e Custos por Quantidade de Dezenas")
 
-dezenas_simuladas = st.selectbox("Escolha quantas dezenas deseja jogar", [15, 16, 17, 18, 19, 20], index=0, key="prob_dezenas")
+    dezenas_simuladas = st.selectbox("Escolha quantas dezenas deseja jogar", [15, 16, 17, 18, 19, 20], index=0, key="prob_dezenas")
 
-probabilidades = {
-    15: "1 em 3.268.760",
-    16: "1 em 204.298",
-    17: "1 em 24.035",
-    18: "1 em 4.006",
-    19: "1 em 843",
-    20: "1 em 211"
-}
+    probabilidades = {
+        15: "1 em 3.268.760",
+        16: "1 em 204.298",
+        17: "1 em 24.035",
+        18: "1 em 4.006",
+        19: "1 em 843",
+        20: "1 em 211"
+    }
 
-combinacoes = {
-    15: 1,
-    16: 16,
-    17: 136,
-    18: 816,
-    19: 3876,
-    20: 15504
-}
+    combinacoes = {
+        15: 1,
+        16: 16,
+        17: 136,
+        18: 816,
+        19: 3876,
+        20: 15504
+    }
 
-custo_total = combinacoes[dezenas_simuladas] * 3.00
+    custo_total = combinacoes[dezenas_simuladas] * 3.00
 
-st.markdown(f"""
-🎯 **Probabilidade de acertar 15 pontos jogando {dezenas_simuladas} dezenas:**  
-📈 ` {probabilidades[dezenas_simuladas]} `
+    st.markdown(f"""
+    🎯 **Probabilidade de acertar 15 pontos jogando {dezenas_simuladas} dezenas:**  
+    📈 ` {probabilidades[dezenas_simuladas]} `
 
-🎲 **Combinações possíveis de 15 dezenas:** `{combinacoes[dezenas_simuladas]}` jogos
+    🎲 **Combinações possíveis de 15 dezenas:** `{combinacoes[dezenas_simuladas]}` jogos
 
-💸 **Custo estimado:** `R$ {custo_total:,.2f}`
-""")
+    💸 **Custo estimado:** `R$ {custo_total:,.2f}`
+    """)
 
 
     st.subheader("🔮 Geração de Jogos Estratégicos com Base Estatística")
