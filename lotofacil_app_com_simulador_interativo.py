@@ -224,50 +224,50 @@ st.markdown(f"""
 """)
 
 
-st.subheader("🔮 Geração de Jogos Estratégicos com Base Estatística")
+    st.subheader("🔮 Geração de Jogos Estratégicos com Base Estatística")
+    
+    qtd_jogos_estrategicos = st.number_input("Quantos jogos deseja gerar?", min_value=1, max_value=1000, value=10, step=1, key="estrategicos")
+    
+    # Frequentes e atrasadas
+    todas_dezenas = concursos[dezenas_cols].values.ravel()
+    frequencia_geral = pd.Series(todas_dezenas).value_counts().sort_values(ascending=False)
+    mais_frequentes = list(frequencia_geral.head(25).index)
+    menos_frequentes = list(frequencia_geral.tail(5).index)
+    
+    # Último sorteio e moldura
+    ult_sorteio = set(concursos.iloc[-1][dezenas_cols])
+    moldura = {1, 2, 3, 4, 5, 6, 10, 11, 15, 16, 20, 21, 22, 23, 24, 25}
+    
+    jogos_estrategicos = []
+    tentativas = 0
+    qtd_dezenas = st.selectbox("🔢 Quantidade de dezenas por jogo", [15, 16, 17, 18, 19, 20], index=0, key="estrategico_dezenas")
+    
+    while len(jogos_estrategicos) < qtd_jogos_estrategicos and tentativas < 5000:
+        tentativas += 1
+        jogo = sorted(random.sample(mais_frequentes, qtd_dezenas))
+        pares = len([n for n in jogo if n % 2 == 0])
+        impares = qtd_dezenas - pares
+        soma = sum(jogo)
+        repetidas = len(set(jogo) & ult_sorteio)
+        qtd_moldura = len(set(jogo) & moldura)
+        qtd_atrasadas = len(set(jogo) & set(menos_frequentes))
 
-qtd_jogos_estrategicos = st.number_input("Quantos jogos deseja gerar?", min_value=1, max_value=1000, value=10, step=1, key="estrategicos")
-
-# Frequentes e atrasadas
-todas_dezenas = concursos[dezenas_cols].values.ravel()
-frequencia_geral = pd.Series(todas_dezenas).value_counts().sort_values(ascending=False)
-mais_frequentes = list(frequencia_geral.head(25).index)
-menos_frequentes = list(frequencia_geral.tail(5).index)
-
-# Último sorteio e moldura
-ult_sorteio = set(concursos.iloc[-1][dezenas_cols])
-moldura = {1, 2, 3, 4, 5, 6, 10, 11, 15, 16, 20, 21, 22, 23, 24, 25}
-
-jogos_estrategicos = []
-tentativas = 0
-qtd_dezenas = st.selectbox("🔢 Quantidade de dezenas por jogo", [15, 16, 17, 18, 19, 20], index=0, key="estrategico_dezenas")
-
-while len(jogos_estrategicos) < qtd_jogos_estrategicos and tentativas < 5000:
-    tentativas += 1
-    jogo = sorted(random.sample(mais_frequentes, qtd_dezenas))
-    pares = len([n for n in jogo if n % 2 == 0])
-    impares = qtd_dezenas - pares
-    soma = sum(jogo)
-    repetidas = len(set(jogo) & ult_sorteio)
-    qtd_moldura = len(set(jogo) & moldura)
-    qtd_atrasadas = len(set(jogo) & set(menos_frequentes))
-
-    if (
-        impares > pares and
-        180 <= soma <= 240 and
-        5 <= qtd_moldura <= 13 and
-        4 <= repetidas <= 10 and
-        qtd_atrasadas <= 3
-    ):
-        jogos_estrategicos.append({
-            "Dezenas": jogo,
-            "Soma": soma,
-            "Pares": pares,
-            "Ímpares": impares,
-            "Moldura": qtd_moldura,
-            "Repetidas com Último": repetidas,
-            "Menos Frequentes": qtd_atrasadas
-        })
+        if (
+            impares > pares and
+            180 <= soma <= 240 and
+            5 <= qtd_moldura <= 13 and
+            4 <= repetidas <= 10 and
+            qtd_atrasadas <= 3
+        ):
+            jogos_estrategicos.append({
+                "Dezenas": jogo,
+                "Soma": soma,
+                "Pares": pares,
+                "Ímpares": impares,
+                "Moldura": qtd_moldura,
+                "Repetidas com Último": repetidas,
+                "Menos Frequentes": qtd_atrasadas
+            })
 
     if jogos_estrategicos:
         df_estrategico = pd.DataFrame(jogos_estrategicos)
