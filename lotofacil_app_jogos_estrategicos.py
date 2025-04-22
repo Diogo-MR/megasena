@@ -205,6 +205,7 @@ moldura = {1, 2, 3, 4, 5, 6, 10, 11, 15, 16, 20, 21, 22, 23, 24, 25}
 
 jogos_estrategicos = []
 tentativas = 0
+qtd_dezenas = st.selectbox("🔢 Quantidade de dezenas por jogo", [15, 16, 17, 18, 19, 20], index=0, key="estrategico_dezenas")
 
 while len(jogos_estrategicos) < qtd_jogos_estrategicos and tentativas < 5000:
     tentativas += 1
