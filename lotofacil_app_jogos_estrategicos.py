@@ -19,9 +19,9 @@ uploaded_file = st.file_uploader("📤 Envie o arquivo .xlsx com os concursos da
 if uploaded_file:
     df = pd.read_excel(uploaded_file)
     dezenas_cols = [col for col in df.columns if "Bola" in col]
-    concursos = df[['Concurso'] + dezenas_cols].dropna()
     concursos = df[["Concurso", "Data Sorteio"] + dezenas_cols].dropna()
-
+    concursos = df[['Concurso'] + dezenas_cols].dropna()
+    
     ult = concursos.iloc[-1]
     penult = concursos.iloc[-2]
     dezenas_ult = set(ult[dezenas_cols])
